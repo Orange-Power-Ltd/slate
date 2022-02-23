@@ -8,8 +8,8 @@ language_tabs: # must be one of https://git.io/vQNgJ
   - javascript
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a>
+  # - <a href='#'>Sign Up for a Developer Key</a>
+  - <a href='https://github.com/slatedocs/slate'>Documentation Powered by Orange Power Ltd</a>
 
 includes:
   - errors
@@ -25,221 +25,258 @@ meta:
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the Orange Power Connect API! You can use our API to access different devices API endpoints, which can get information, or give access to different control mechanisms.
 
 We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
 
-This example API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use it as a base for your own API's documentation.
+# BMW
 
-# Authentication
-
-> To authorize, use this code:
+## Get Tokens
 
 ```ruby
-require 'kittn'
+require "uri"
+require "json"
+require "net/http"
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
+url = URI("http://localhost:3000/api/bmw/oauth-token")
 
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here" \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens" \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
+http = Net::HTTP.new(url.host, url.port);
+request = Net::HTTP::Post.new(url)
+request["Content-Type"] = "application/json"
+request.body = JSON.dump({
+  "email": "georgebatts1@outlook.com",
+  "password": "Myenergi123&",
+  "payload": {
+    "email": "test@test.com"
   }
-]
+})
+
+response = http.request(request)
+puts response.read_body
 ```
 
-This endpoint retrieves all kittens.
+```python
+import requests
+import json
+
+url = "http://localhost:3000/api/bmw/oauth-token"
+
+payload = json.dumps({
+  "email": "georgebatts1@outlook.com",
+  "password": "Myenergi123&",
+  "payload": {
+    "email": "test@test.com"
+  }
+})
+headers = {
+  'Content-Type': 'application/json'
+}
+
+response = requests.request("POST", url, headers=headers, data=payload)
+
+print(response.text)
+```
+
+```shell
+curl --location --request POST 'http://localhost:3000/api/bmw/oauth-token' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+ "email":"georgebatts1@outlook.com",
+ "password":"Myenergi123&",
+ "payload":{
+     "email":"test@test.com"
+ }
+}'
+```
+
+```javascript
+var axios = require('axios');
+var data = JSON.stringify({
+  "email": "georgebatts1@outlook.com",
+  "password": "Myenergi123&",
+  "payload": {
+    "email": "test@test.com"
+  }
+});
+
+var config = {
+  method: 'post',
+  url: 'http://localhost:3000/api/bmw/oauth-token',
+  headers: { 
+    'Content-Type': 'application/json'
+  },
+  maxRedirects: 0,
+  data : data
+};
+
+axios(config)
+.then(function (response) {
+  console.log(JSON.stringify(response.data));
+})
+.catch(function (error) {
+  console.log(error);
+});
+```
+> Request body:
+
+```json
+{
+ "email":"demo@outlook.com",
+ "password":"demopass",
+ "payload":{
+     "email":"test@test.com"
+ }
+}
+```
+
+> Response:
+
+```json
+{
+    "access_token": "YKJUUwmBXcQThWx7XzU7ddd4pyMZkd3tgWM",
+    "token_type": "Bearer",
+    "expires_in": 28800,
+    "refresh_token": "mRlcF34pWzkfHxOauwpVe7B3GSMxCSFdfeRIPA3G9ilkHSGacnkUUo",
+    "scope": "smacc vehicle_data vehicle_list perseus svds dlm cesim mini_connected remote_services authenticate_user fupo"
+}
+```
+
+This endpoint returns access token.
 
 ### HTTP Request
 
-`GET http://example.com/api/kittens`
+`POST https://www.connect.orangepower.co.uk/api/bmw/oauth-token`
 
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
+<!-- <aside class="success">
 Remember — a happy kitten is an authenticated kitten!
-</aside>
+</aside> -->
 
-## Get a Specific Kitten
+## Get vehicle info
 
 ```ruby
-require 'kittn'
+require "uri"
+require "json"
+require "net/http"
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
+url = URI("https://www.connect.orangepower.co.uk/api/get-user-devices")
+
+https = Net::HTTP.new(url.host, url.port)
+https.use_ssl = true
+
+request = Net::HTTP::Post.new(url)
+request["Authorization"] = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRyYW5zcG9ydGVyQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoidHJhbnNwb3J0ZXIiLCJpYXQiOjE2NDQwNzQ0OTgsImV4cCI6MTY0NDA3ODA5OH0"
+request["Content-Type"] = "application/json"
+request.body = JSON.dump({
+  "email": "test@test.com",
+  "password": "testing123"
+})
+
+response = https.request(request)
+puts response.read_body
+
 ```
 
 ```python
-import kittn
+import requests
+import json
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
+url = "https://www.connect.orangepower.co.uk/api/get-user-devices"
+
+payload = json.dumps({
+  "email": "test@test.com",
+  "password": "testing123"
+})
+headers = {
+  'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRyYW5zcG9ydGVyQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoidHJhbnNwb3J0ZXIiLCJpYXQiOjE2NDQwNzQ0OTgsImV4cCI6MTY0NDA3ODA5OH0',
+  'Content-Type': 'application/json'
+}
+
+response = requests.request("POST", url, headers=headers, data=payload)
+
+print(response.text)
 ```
 
 ```shell
-curl "http://example.com/api/kittens/2" \
-  -H "Authorization: meowmeowmeow"
+curl --location --request POST 'https://www.connect.orangepower.co.uk/api/get-user-devices' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRyYW5zcG9ydGVyQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoidHJhbnNwb3J0ZXIiLCJpYXQiOjE2NDQwNzQ0OTgsImV4cCI6MTY0NDA3ODA5OH0' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "email":"test@test.com",
+    "password":"testing123"
+}'
 ```
 
 ```javascript
-const kittn = require('kittn');
+var axios = require('axios');
+var data = JSON.stringify({
+  "email": "test@test.com",
+  "password": "testing123"
+});
 
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
+var config = {
+  method: 'post',
+  url: 'https://www.connect.orangepower.co.uk/api/get-user-devices',
+  headers: { 
+    'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRyYW5zcG9ydGVyQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoidHJhbnNwb3J0ZXIiLCJpYXQiOjE2NDQwNzQ0OTgsImV4cCI6MTY0NDA3ODA5OH0', 
+    'Content-Type': 'application/json'
+  },
+  maxRedirects: 0,
+  data : data
+};
+
+axios(config)
+.then(function (response) {
+  console.log(JSON.stringify(response.data));
+})
+.catch(function (error) {
+  console.log(error);
+});
+
 ```
-
-> The above command returns JSON structured like this:
+> Request body:
 
 ```json
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  "email": "demo@hotmail.com",
+  "password": "password"
 }
 ```
 
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
-
-### HTTP Request
-
-`GET http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
-
-## Delete a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2" \
-  -X DELETE \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
-
-> The above command returns JSON structured like this:
+> Response:
 
 ```json
-{
-  "id": 2,
-  "deleted" : ":("
-}
+    {
+        "_id": "62137c48e075b1442f0c955c",
+        "electric_range": {
+            "distance": {
+                "value": 121,
+                "units": "KILOMETERS"
+            }
+        },
+        "device_type": "bmw",
+        "user_id": "61b1d1a2d5df13f67657dbf2",
+        "device_id": "WBY7ZddD802daf16",
+        "id": "916ba1b2eeba4b4881ce9d829852d70e",
+        "model": "i3s 94 REX",
+        "year": 2018,
+        "brand": "BMW",
+        "charging_state": {
+            "charge_percentage": "82",
+            "state": "NOT_CHARGING",
+            "type": "CONDUCTIVE",
+            "is_charger_connected": false
+        },
+        "__v": 0
+    }
 ```
 
-This endpoint deletes a specific kitten.
+This endpoint retrieves all the details related to your BMW car
 
 ### HTTP Request
 
-`DELETE http://example.com/kittens/<ID>`
+`POST https://www.connect.orangepower.co.uk/api/get-user-devices`
 
-### URL Parameters
+### Authorization Parameters
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
+Bearer `<token>`
 
