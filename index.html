@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <meta
             name="description"
-            content="Documentation for the Kittn API"
+            content="Documentation for the Orange Power API"
         >
     <title>API Reference</title>
 
@@ -295,7 +295,7 @@
     </script>
   </head>
 
-  <body class="index" data-languages="[&quot;shell&quot;,&quot;ruby&quot;,&quot;python&quot;,&quot;javascript&quot;]">
+  <body class="index" data-languages="[&quot;javascript&quot;,&quot;shell&quot;,&quot;ruby&quot;,&quot;python&quot;]">
     <a href="#" id="nav-button">
       <span>
         NAV
@@ -305,10 +305,10 @@
     <div class="toc-wrapper">
       <img src="images/logo-e324bbcd.png" class="logo" alt="" />
         <div class="lang-selector">
-              <a href="#" data-language-name="shell">shell</a>
+              <a href="#" data-language-name="javascript">nodejs</a>
+              <a href="#" data-language-name="shell">cURL</a>
               <a href="#" data-language-name="ruby">ruby</a>
               <a href="#" data-language-name="python">python</a>
-              <a href="#" data-language-name="javascript">javascript</a>
         </div>
         <div class="search">
           <input type="text" class="search" id="input-search" placeholder="Search">
@@ -319,24 +319,22 @@
             <a href="#introduction" class="toc-h1 toc-link" data-title="Introduction">Introduction</a>
           </li>
           <li>
-            <a href="#bmw" class="toc-h1 toc-link" data-title="BMW">BMW</a>
+            <a href="#api-documentation" class="toc-h1 toc-link" data-title="API DOCUMENTATION">API DOCUMENTATION</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#get-tokens" class="toc-h2 toc-link" data-title="Get Tokens">Get Tokens</a>
+                    <a href="#bmw" class="toc-h2 toc-link" data-title="BMW">BMW</a>
                     <ul class="toc-list-h3">
                         <li>
-                          <a href="#http-request" class="toc-h3 toc-link" data-title="HTTP Request">HTTP Request</a>
-                        </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <a href="#get-vehicle-info" class="toc-h2 toc-link" data-title="Get vehicle info">Get vehicle info</a>
-                    <ul class="toc-list-h3">
-                        <li>
-                          <a href="#http-request-2" class="toc-h3 toc-link" data-title="HTTP Request">HTTP Request</a>
+                          <a href="#schema" class="toc-h3 toc-link" data-title="Schema">Schema</a>
                         </li>
                         <li>
-                          <a href="#authorization-parameters" class="toc-h3 toc-link" data-title="Authorization Parameters">Authorization Parameters</a>
+                          <a href="#code-algorithm" class="toc-h3 toc-link" data-title="Code Algorithm">Code Algorithm</a>
+                        </li>
+                        <li>
+                          <a href="#get-token-api" class="toc-h3 toc-link" data-title="Get Token API">Get Token API</a>
+                        </li>
+                        <li>
+                          <a href="#get-vehicle-info-api" class="toc-h3 toc-link" data-title="Get vehicle info - API">Get vehicle info - API</a>
                         </li>
                     </ul>
                   </li>
@@ -354,10 +352,58 @@
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='introduction'>Introduction</h1>
-<p>Welcome to the Orange Power Connect API! You can use our API to access different devices API endpoints, which can get information, or give access to different control mechanisms.</p>
+<p>Welcome to the Orange Power Connect Documentation!  This documentation will give you insight about the various APIs and their implementation details. You can use our API to access different devices API endpoints, which can get information, or give access to different control mechanisms.</p>
 
 <p>We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.</p>
-<h1 id='bmw'>BMW</h1><h2 id='get-tokens'>Get Tokens</h2><div class="highlight"><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s2">"uri"</span>
+<h1 id='api-documentation'>API DOCUMENTATION</h1><h2 id='bmw'>BMW</h2>
+<p>For BMW the APIs have been implemented using Reverse Engineering MyBMW app. </p>
+
+<p>Repositories used as reference for our API implementation:
+<a href="https://github.com/bimmerconnected/bimmer_connected">https://github.com/bimmerconnected/bimmer_connected</a></p>
+<h3 id='schema'>Schema</h3><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">bmw_user_token_schema</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Schema</span><span class="p">({</span>
+  <span class="na">user_id</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nx">mongoose</span><span class="p">.</span><span class="nx">Schema</span><span class="p">.</span><span class="nx">Types</span><span class="p">.</span><span class="nx">ObjectId</span><span class="p">,</span> <span class="na">required</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="na">ref</span><span class="p">:</span> <span class="dl">'</span><span class="s1">user</span><span class="dl">'</span> <span class="p">},</span>
+  <span class="na">token_type</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">type</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="na">default</span><span class="p">:</span> <span class="dl">'</span><span class="s1">bmw</span><span class="dl">'</span><span class="p">,</span> <span class="na">enum</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">bmw</span><span class="dl">'</span><span class="p">],</span> <span class="na">required</span><span class="p">:</span> <span class="kc">true</span>
+  <span class="p">},</span>
+  <span class="na">bmw_access_token</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span> <span class="p">},</span>
+  <span class="na">bmw_refresh_token</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span> <span class="p">},</span>
+  <span class="na">bmw_expires_in</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Date</span> <span class="p">},</span>
+<span class="p">},</span> <span class="p">{</span> <span class="na">timestamps</span><span class="p">:</span> <span class="kc">true</span> <span class="p">});</span>
+
+<span class="kd">const</span> <span class="nx">bmw_device_schema</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Schema</span><span class="p">({</span>
+  <span class="na">user_id</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nx">mongoose</span><span class="p">.</span><span class="nx">Schema</span><span class="p">.</span><span class="nx">Types</span><span class="p">.</span><span class="nx">ObjectId</span><span class="p">,</span> <span class="na">required</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="na">ref</span><span class="p">:</span> <span class="dl">'</span><span class="s1">user</span><span class="dl">'</span> <span class="p">},</span>
+  <span class="na">device_type</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">type</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="na">default</span><span class="p">:</span> <span class="dl">'</span><span class="s1">bmw</span><span class="dl">'</span><span class="p">,</span> <span class="na">enum</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">bmw</span><span class="dl">'</span><span class="p">],</span> <span class="na">required</span><span class="p">:</span> <span class="kc">true</span>
+  <span class="p">},</span>
+  <span class="na">device_id</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="na">required</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="na">unique</span><span class="p">:</span> <span class="kc">true</span> <span class="p">},</span> <span class="c1">// device_id is the vin</span>
+  <span class="na">id</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="na">required</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="na">unique</span><span class="p">:</span> <span class="kc">true</span> <span class="p">},</span> <span class="c1">// device_id is the vin</span>
+  <span class="na">model</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span> <span class="p">},</span>
+  <span class="na">year</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Number</span> <span class="p">},</span>
+  <span class="na">brand</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span> <span class="p">},</span>
+  <span class="na">charging_state</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">charge_percentage</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span> <span class="p">},</span>
+    <span class="na">state</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span> <span class="p">},</span>
+    <span class="na">type</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span> <span class="p">},</span>
+    <span class="na">is_charger_connected</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Boolean</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">electric_range</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">distance</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">value</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Number</span> <span class="p">},</span>
+      <span class="na">units</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nb">String</span> <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+
+<span class="p">});</span>
+</code></pre></div>
+<p>There are two schemas:</p>
+
+<ol>
+<li><p>Token Schema </p></li>
+<li><p>Bmw Devices Schema</p></li>
+</ol>
+<h3 id='code-algorithm'>Code Algorithm</h3>
+<p>Coming soon</p>
+<h3 id='get-token-api'>Get Token API</h3><div class="highlight"><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s2">"uri"</span>
 <span class="nb">require</span> <span class="s2">"json"</span>
 <span class="nb">require</span> <span class="s2">"net/http"</span>
 
@@ -454,13 +500,11 @@
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
 <p>This endpoint returns access token.</p>
-<h3 id='http-request'>HTTP Request</h3>
-<p><code>POST https://www.connect.orangepower.co.uk/api/bmw/oauth-token</code></p>
 
-<!-- <aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside> -->
-<h2 id='get-vehicle-info'>Get vehicle info</h2><div class="highlight"><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s2">"uri"</span>
+<p>HTTP Request</p>
+
+<p><code>POST https://www.connect.orangepower.co.uk/api/bmw/oauth-token</code></p>
+<h3 id='get-vehicle-info-api'>Get vehicle info - API</h3><div class="highlight"><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s2">"uri"</span>
 <span class="nb">require</span> <span class="s2">"json"</span>
 <span class="nb">require</span> <span class="s2">"net/http"</span>
 
@@ -566,9 +610,13 @@ Remember — a happy kitten is an authenticated kitten!
     </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
 <p>This endpoint retrieves all the details related to your BMW car</p>
-<h3 id='http-request-2'>HTTP Request</h3>
+
+<p>HTTP Request</p>
+
 <p><code>POST https://www.connect.orangepower.co.uk/api/get-user-devices</code></p>
-<h3 id='authorization-parameters'>Authorization Parameters</h3>
+
+<p>Authorisation</p>
+
 <p>Bearer <code>&lt;token&gt;</code></p>
 <h1 id='errors'>Errors</h1>
 <aside class="notice">
@@ -589,7 +637,7 @@ This error section is stored in a separate file in <code>includes/_errors.md</co
 </tr>
 <tr>
 <td>401</td>
-<td>Unauthorized -- Your API key is wrong.</td>
+<td>Unauthorized</td>
 </tr>
 <tr>
 <td>403</td>
@@ -597,11 +645,11 @@ This error section is stored in a separate file in <code>includes/_errors.md</co
 </tr>
 <tr>
 <td>404</td>
-<td>Not Found -- The specified kitten could not be found.</td>
+<td>Not Found</td>
 </tr>
 <tr>
 <td>405</td>
-<td>Method Not Allowed -- You tried to access a kitten with an invalid method.</td>
+<td>Method Not Allowed -- You tried to access a device with an invalid method.</td>
 </tr>
 <tr>
 <td>406</td>
@@ -609,15 +657,11 @@ This error section is stored in a separate file in <code>includes/_errors.md</co
 </tr>
 <tr>
 <td>410</td>
-<td>Gone -- The kitten requested has been removed from our servers.</td>
-</tr>
-<tr>
-<td>418</td>
-<td>I&#39;m a teapot.</td>
+<td>Gone -- The api requested has been removed from our servers.</td>
 </tr>
 <tr>
 <td>429</td>
-<td>Too Many Requests -- You&#39;re requesting too many kittens! Slow down!</td>
+<td>Too Many Requests</td>
 </tr>
 <tr>
 <td>500</td>
@@ -632,10 +676,10 @@ This error section is stored in a separate file in <code>includes/_errors.md</co
       </div>
       <div class="dark-box">
           <div class="lang-selector">
-                <a href="#" data-language-name="shell">shell</a>
+                <a href="#" data-language-name="javascript">nodejs</a>
+                <a href="#" data-language-name="shell">cURL</a>
                 <a href="#" data-language-name="ruby">ruby</a>
                 <a href="#" data-language-name="python">python</a>
-                <a href="#" data-language-name="javascript">javascript</a>
           </div>
       </div>
     </div>
