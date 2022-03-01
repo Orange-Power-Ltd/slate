@@ -2,10 +2,10 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - shell
-  - ruby
-  - python
-  - javascript
+  - javascript: nodejs
+  - shell: cURL
+  - ruby: ruby
+  - python: python
 
 toc_footers:
   # - <a href='#'>Sign Up for a Developer Key</a>
@@ -20,18 +20,74 @@ code_clipboard: true
 
 meta:
   - name: description
-    content: Documentation for the Kittn API
+    content: Documentation for the Orange Power API
 ---
 
 # Introduction
 
-Welcome to the Orange Power Connect API! You can use our API to access different devices API endpoints, which can get information, or give access to different control mechanisms.
+Welcome to the Orange Power Connect Documentation!  This documentation will give you insight about the various APIs and their implementation details. You can use our API to access different devices API endpoints, which can get information, or give access to different control mechanisms.
 
 We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
 
-# BMW
+# API DOCUMENTATION
 
-## Get Tokens
+## BMW
+
+For BMW the APIs have been implemented using Reverse Engineering MyBMW app. 
+
+Repositories used as reference for our API implementation:
+[https://github.com/bimmerconnected/bimmer_connected](https://github.com/bimmerconnected/bimmer_connected)
+
+### Schema
+
+```javascript
+const bmw_user_token_schema = new Schema({
+  user_id: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'user' },
+  token_type: {
+    type: String, default: 'bmw', enum: ['bmw'], required: true
+  },
+  bmw_access_token: { type: String },
+  bmw_refresh_token: { type: String },
+  bmw_expires_in: { type: Date },
+}, { timestamps: true });
+
+const bmw_device_schema = new Schema({
+  user_id: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'user' },
+  device_type: {
+    type: String, default: 'bmw', enum: ['bmw'], required: true
+  },
+  device_id: { type: String, required: true, unique: true }, // device_id is the vin
+  id: { type: String, required: true, unique: true }, // device_id is the vin
+  model: { type: String },
+  year: { type: Number },
+  brand: { type: String },
+  charging_state: {
+    charge_percentage: { type: String },
+    state: { type: String },
+    type: { type: String },
+    is_charger_connected: { type: Boolean }
+  },
+  electric_range: {
+    distance: {
+      value: { type: Number },
+      units: { type: String }
+    }
+  },
+
+});
+```
+There are two schemas:
+
+1. Token Schema 
+
+2. Bmw Devices Schema
+
+
+### Code Algorithm
+
+Coming soon
+
+### Get Token API
 
 ```ruby
 require "uri"
@@ -143,15 +199,11 @@ axios(config)
 
 This endpoint returns access token.
 
-### HTTP Request
+HTTP Request
 
 `POST https://www.connect.orangepower.co.uk/api/bmw/oauth-token`
 
-<!-- <aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside> -->
-
-## Get vehicle info
+### Get vehicle info - API
 
 ```ruby
 require "uri"
@@ -272,11 +324,10 @@ axios(config)
 
 This endpoint retrieves all the details related to your BMW car
 
-### HTTP Request
+HTTP Request
 
 `POST https://www.connect.orangepower.co.uk/api/get-user-devices`
 
-### Authorization Parameters
+Authorisation
 
 Bearer `<token>`
-
